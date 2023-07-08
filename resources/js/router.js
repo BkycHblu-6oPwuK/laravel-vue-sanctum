@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
     {
         path: '/Get', component: () => import('./components/Get.vue'),
-        name: 'get'
+        name: 'get',
     },
     {
         path: '/Login', component: () => import('./components/Login.vue'),
@@ -17,6 +17,10 @@ const routes = [
         path: '/Personal', component: () => import('./components/Personal.vue'),
         name: 'personal'
     },
+    {
+        path: '/edit/:id', component: () => import('./components/Posts/Edit.vue'),
+        name: 'edit'
+    }
 ]
 
 const router = createRouter({
@@ -24,11 +28,11 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach((to,from,next) => {
+router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('x_xsrf_token')
 
-    if(!token){
-        if(to.name === 'login' || to.name === 'registration'){
+    if (!token) {
+        if (to.name === 'login' || to.name === 'registration') {
             return next()
         } else {
             return next({
@@ -37,7 +41,7 @@ router.beforeEach((to,from,next) => {
         }
     }
 
-    if(to.name === 'login' || to.name === 'registration' && token){
+    if (to.name === 'login' || to.name === 'registration' && token) {
         return next({
             name: 'personal'
         })

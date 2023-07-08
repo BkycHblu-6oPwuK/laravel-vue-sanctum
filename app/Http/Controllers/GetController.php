@@ -8,10 +8,14 @@ use Illuminate\Http\Request;
 
 class GetController extends Controller
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
-        $posts = Posts::where('id_user', auth('sanctum')->user()->id)->get();
-
+        if(request()->get('filter') === 'deleted'){
+            $posts = Posts::onlyTrashed()->where('id_user', auth('sanctum')->user()->id)->where('deleted_at','>=',Carbon::now()->subDays(30));
+        } else {
+            $posts = Posts::where('id_user', auth('sanctum')->user()->id);
+        }
+        $posts = $posts->orderByDesc('id')->get();
         $posts = $posts->map(function ($post) {
             $post['date'] = Carbon::parse($post['created_at'])->format('d.m.Y');
             return $post;
